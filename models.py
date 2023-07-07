@@ -68,6 +68,8 @@ class Crossing(PydanticExlcudeIDModel):
 
     add_time = fields.DatetimeField()
 
+    status = fields.CharEnumField(Status, default=Status.PENDING)
+
     level = fields.OneToOneField("models.Level", related_name="crossing")
     coords = fields.OneToOneField("models.Coords", related_name="crossing")
 
