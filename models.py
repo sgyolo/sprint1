@@ -48,7 +48,7 @@ class Crossing(Model):
 
     add_time = fields.DatetimeField(auto_now_add=True)
 
-    level = fields.OneToOneField("model.Level")
+    level = fields.OneToOneField("models.Level")
     coord_id = fields.OneToOneField("models.Coords", related_name="crossing")
 
 
