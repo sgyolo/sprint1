@@ -19,6 +19,12 @@ BAD_REQUEST_RESPONSE = JSONResponse(
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     return BAD_REQUEST_RESPONSE
 
+@app.get("/submitData/{item_id}", response_model=CrossingPydantic)
+async def get_crossing(item_id: int):
+    crossing = await db.get_crossing(item_id)
+    return await CrossingPydantic.from_tortoise_orm(crossing)
+
+
 @app.post("/submitData", response_model=CrossingPydantic)
 async def update_crossing(crossing: CrossingPydantic):
     d = crossing.dict(exclude_unset=True)
