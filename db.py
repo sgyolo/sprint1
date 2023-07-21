@@ -16,11 +16,11 @@ FSTR_DB_NAME = getenv("FSTR_DB_NAME", "pereval")
 
 DB_URL = f"postgres://{FSTR_DB_LOGIN}:{FSTR_DB_PASS}@{FSTR_DB_HOST}:{FSTR_DB_PORT}/"
 
-class CrossingsDB:
-    def __init__(self, app: "FastAPI",  db_name: str):
-        self.db_url = DB_URL + db_name
-        register_tortoise(app, modules={"models": ["models"]}, db_url= self.db_url, generate_schemas=True)
 
+class CrossingsDB:
+    def __init__(self, app: "FastAPI", db_name: str):
+        self.db_url = DB_URL + db_name
+        register_tortoise(app, modules={"models": ["models"]}, db_url=self.db_url, generate_schemas=True)
 
     async def get_crossing(self, id: int) -> Crossing | None:
         return await Crossing.get_or_none(id=id)
@@ -30,11 +30,23 @@ class CrossingsDB:
         if not crossing:
             return False
 
-        new_data.pop("user")
+        if level := new_data.get("level"):
+            level = await Level.create(**level)
+            new_data["level"] = level
+        if coords := new_data.get("coords"):
+            coords = await Coords.create(**coords)
+            new_data["coords"] = coords
+
+        if images := new_data.get("images"):
+            for image in images:
+                await Image.create(**image, crossing=crossing)
+            new_data.pop("images")
+
+        new_data.pop("user", None)
 
         await crossing.update_from_dict(new_data)
+        await crossing.save()
         return True
-
 
     async def try_to_add_crossing(self, payload: dict[str, ...]) -> bool | Crossing:
         try:
@@ -54,9 +66,6 @@ class CrossingsDB:
         payload["status"] = Status.NEW
 
         crossing = await Crossing.create(**payload)
-        for image in images:
-            await Image.create(**image, crossing=crossing)
+
 
         return crossing
-
-
