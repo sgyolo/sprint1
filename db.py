@@ -22,6 +22,7 @@ class CrossingsDB:
         self.db_url = DB_URL + db_name
         register_tortoise(app, modules={"models": ["models"]}, db_url=self.db_url, generate_schemas=True)
 
+
     async def get_crossing(self, id: int) -> Crossing | None:
         return await Crossing.get_or_none(id=id)
 
@@ -47,6 +48,11 @@ class CrossingsDB:
         await crossing.update_from_dict(new_data)
         await crossing.save()
         return True
+
+    async def get_crossing(self, id: int):
+        return await Crossing.get_or_none(id=id)
+
+
 
     async def try_to_add_crossing(self, payload: dict[str, ...]) -> bool | Crossing:
         try:
