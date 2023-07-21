@@ -4,6 +4,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 
 from enum import StrEnum
 
+from typing import Optional
 
 class PydanticExlcudeIDModel(Model):
     class PydanticMeta:
@@ -83,4 +84,5 @@ class Coords(PydanticExlcudeIDModel):
 
 Tortoise.init_models(["models"], "models")
 CrossingPydantic = pydantic_model_creator(Crossing)
-
+class CrossingOptional(CrossingPydantic):
+    __annotations__ = {k: Optional[v] for k, v in CrossingPydantic.__annotations__.items()}
