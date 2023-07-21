@@ -5,17 +5,22 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 from enum import StrEnum
 
 
-class Area(Model):
+class PydanticExlcudeIDModel(Model):
+    class PydanticMeta:
+        exclude = ("id",)
+
+
+class Area(PydanticExlcudeIDModel):
     id = fields.IntField(pk=True)
     parent_id = fields.ForeignKeyField("models.Area")
 
 
-class ActivityType(Model):
+class ActivityType(PydanticExlcudeIDModel):
     id = fields.IntField(pk=True)
     title = fields.CharField(max_length=15)
 
 
-class Image(Model):
+class Image(PydanticExlcudeIDModel):
     class PydanticMeta:
         exclude = ("id", "date_added")
 
@@ -34,7 +39,7 @@ class Status(StrEnum):
     REJECTED = "rejected"
 
 
-class Level(Model):
+class Level(PydanticExlcudeIDModel):
     id = fields.IntField(pk=True)
     winter = fields.CharField(max_length=10)
     spring = fields.CharField(max_length=10)
@@ -42,7 +47,7 @@ class Level(Model):
     autumn = fields.CharField(max_length=10)
 
 
-class User(Model):
+class User(PydanticExlcudeIDModel):
     id = fields.IntField(pk=True)
     email = fields.CharField(unique=True, max_length=30)
     phone = fields.CharField(max_length=14)
@@ -51,7 +56,7 @@ class User(Model):
     otc = fields.CharField(max_length=30)
 
 
-class Crossing(Model):
+class Crossing(PydanticExlcudeIDModel):
     id = fields.IntField(pk=True)
 
     user = fields.ForeignKeyField("models.User", related_name="crossings")
@@ -69,7 +74,7 @@ class Crossing(Model):
     coords = fields.OneToOneField("models.Coords", related_name="crossing")
 
 
-class Coords(Model):
+class Coords(PydanticExlcudeIDModel):
     id = fields.IntField(pk=True)
     latitude = fields.FloatField()
     longitude = fields.FloatField()
@@ -78,4 +83,4 @@ class Coords(Model):
 
 Tortoise.init_models(["models"], "models")
 CrossingPydantic = pydantic_model_creator(Crossing)
-CrossingInPydantic = pydantic_model_creator(Crossing, exclude_readonly=True, name="UserIn")
+

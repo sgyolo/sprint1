@@ -5,7 +5,7 @@ from fastapi import Request
 
 from db import CrossingsDB
 
-from models import CrossingPydantic, CrossingInPydantic
+from models import CrossingPydantic
 
 app = FastAPI()
 db = CrossingsDB(app, "pereval")
@@ -26,8 +26,8 @@ async def get_crossing(item_id: int):
     return  CrossingPydantic.from_tortoise_orm(crossing) if crossing else {}
 
 
-@app.post("/submitData")
-async def update_crossing(crossing: CrossingInPydantic):
+@app.post("/submitData", response_model=CrossingPydantic)
+async def update_crossing(crossing: CrossingPydantic):
     d = crossing.dict(exclude_unset=True)
     if crossing := await db.try_to_add_crossing(d):
         return JSONResponse(status_code=status.HTTP_200_OK,
