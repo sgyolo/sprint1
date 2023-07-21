@@ -15,12 +15,17 @@ FSTR_DB_PASS = getenv("FSTR_DB_PASS")
 
 
 DB_URL = f"postgres://{FSTR_DB_LOGIN}:{FSTR_DB_PASS}@{FSTR_DB_HOST}:{FSTR_DB_PORT}/"
-
+from tortoise.queryset import QuerySet
 
 class CrossingsDB:
     def __init__(self, app: "FastAPI", db_name: str):
         self.db_url = DB_URL + db_name
         register_tortoise(app, modules={"models": ["models"]}, db_url=self.db_url, generate_schemas=True)
+
+    async def get_crossings_by_email(self, email: str) -> QuerySet[Crossing]:
+        user = await User.get_or_none(email=email)
+        return Crossing.filter(user=user)
+
 
     async def get_crossing(self, id: int) -> Crossing | None:
         return await Crossing.get_or_none(id=id)

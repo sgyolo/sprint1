@@ -22,6 +22,10 @@ BAD_REQUEST_RESPONSE = JSONResponse(
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     return BAD_REQUEST_RESPONSE
 
+@app.get("/submitData/", response_model=list[CrossingPydantic])
+async def get_crossing_with_email(user_email: str):
+    crossings = await db.get_crossings_by_email(user_email)
+    return await CrossingPydantic.from_queryset(crossings)
 @app.get("/submitData/{item_id}", response_model=CrossingPydantic)
 async def get_crossing(item_id: int):
     crossing = await db.get_crossing(item_id)
