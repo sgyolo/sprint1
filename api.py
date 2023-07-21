@@ -29,6 +29,7 @@ async def patch_crossing(item_id: int, crossing: CrossingOptional):
     if await db.try_to_update_crossing_data(item_id, crossing.dict(exclude_unset=True)):
         return JSONResponse(status_code=status.HTTP_200_OK, content={"state": 1})
     return JSONResponse(status_code=status.HTTP_200_OK, content={"state": 0, "message": "Неудача"})
+
 @app.post("/submitData", response_model=CrossingPydantic)
 async def update_crossing(crossing: CrossingPydantic):
     d = crossing.dict(exclude_unset=True)
