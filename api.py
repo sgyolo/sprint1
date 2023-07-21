@@ -22,8 +22,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.get("/submitData/{item_id}", response_model=CrossingPydantic)
 async def get_crossing(item_id: int):
     crossing = await db.get_crossing(item_id)
-    print(crossing.__dict__)
-    return  CrossingPydantic.from_tortoise_orm(crossing) if crossing else {}
+    return await CrossingPydantic.from_tortoise_orm(crossing)
 
 
 @app.post("/submitData", response_model=CrossingPydantic)
