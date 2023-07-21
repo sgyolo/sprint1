@@ -70,7 +70,7 @@ class Crossing(PydanticExlcudeIDModel):
 
     status = fields.CharEnumField(Status, default=Status.PENDING)
 
-    level = fields.OneToOneField("models.Level", related_name="crossing")
+    level = fields.ForeignKeyField("models.Level", related_name="crossings")
     coords = fields.OneToOneField("models.Coords", related_name="crossing")
 
 
