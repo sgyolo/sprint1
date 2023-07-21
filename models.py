@@ -2,7 +2,7 @@ from tortoise.models import Model, MetaInfo
 from tortoise import fields, Tortoise
 from tortoise.contrib.pydantic import pydantic_model_creator
 
-from enum import StrEnum
+from enum import Enum
 
 from typing import Optional
 
@@ -33,7 +33,7 @@ class Image(PydanticExlcudeIDModel):
     crossing = fields.ForeignKeyField(model_name="models.Crossing", related_name="images")
 
 
-class Status(StrEnum):
+class Status(str, Enum):
     NEW = "new"
     PENDING = "pending"
     ACCEPTED = "accepted"
