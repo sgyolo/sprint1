@@ -23,7 +23,7 @@ class CrossingsDB:
 
 
     async def get_crossing(self, id: int):
-        return await Crossing.get_or_none(id=int)
+        return await Crossing.get_or_none(id=id)
 
     async def try_to_add_crossing(self, payload: dict[str, ...]) -> bool | Crossing:
         try:
