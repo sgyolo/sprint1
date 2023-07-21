@@ -12,7 +12,7 @@ FSTR_DB_PORT = getenv("FSTR_DB_PORT", "5432")
 FSTR_DB_LOGIN = getenv("FSTR_DB_LOGIN")
 FSTR_DB_PASS = getenv("FSTR_DB_PASS")
 
-FSTR_DB_NAME = getenv("FSTR_DB_NAME", "pereval")
+
 
 DB_URL = f"postgres://{FSTR_DB_LOGIN}:{FSTR_DB_PASS}@{FSTR_DB_HOST}:{FSTR_DB_PORT}/"
 

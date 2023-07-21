@@ -7,8 +7,11 @@ from db import CrossingsDB
 
 from models import CrossingPydantic, CrossingOptional
 
+from os import getenv
+
 app = FastAPI()
-db = CrossingsDB(app, "pereval")
+FSTR_DB_NAME = getenv("FSTR_DB_NAME", "pereval")
+db = CrossingsDB(app, FSTR_DB_NAME)
 
 BAD_REQUEST_RESPONSE = JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
@@ -22,6 +25,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.get("/submitData/{item_id}", response_model=CrossingPydantic)
 async def get_crossing(item_id: int):
     crossing = await db.get_crossing(item_id)
+    if crossing is None:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": "Crossing doesn`t exists"})
     return await CrossingPydantic.from_tortoise_orm(crossing)
 
 @app.patch("/submitData/{item_id}")
