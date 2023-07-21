@@ -27,7 +27,7 @@ class CrossingsDB:
 
     async def try_to_update_crossing_data(self, id: int, new_data: dict[str, ...]) -> bool:
         crossing = await Crossing.get_or_none(id=id)
-        if not crossing:
+        if not crossing or crossing.status != Status.NEW:
             return False
 
         if level := new_data.get("level"):
